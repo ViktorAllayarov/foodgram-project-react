@@ -4,6 +4,7 @@ from datetime import datetime
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+
 from django_filters.rest_framework import DjangoFilterBackend
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfbase import pdfmetrics
@@ -25,7 +26,14 @@ from api.serializers import (
     RecipeWriteSerializer,
     TagSerializer,
 )
-from recipes.models import AmountIngredient, Cart, Favorites, Ingredient, Recipe, Tag
+from recipes.models import (
+    AmountIngredient,
+    Cart,
+    Favorites,
+    Ingredient,
+    Recipe,
+    Tag,
+)
 
 
 class TagViewSet(ReadOnlyModelViewSet):
@@ -130,7 +138,9 @@ class RecipeViewSet(ModelViewSet):
             else:
                 final_ingredients_list[name]["amount"] += item["amount"]
         print(final_ingredients_list)
-        pdfmetrics.registerFont(TTFont("Roboto-Regular", "Roboto-Regular.ttf", "UTF-8"))
+        pdfmetrics.registerFont(
+            TTFont("Roboto-Regular", "Roboto-Regular.ttf", "UTF-8")
+        )
         filename = f"{user.username}_shopping_list"
 
         buffer = io.BytesIO()
@@ -163,6 +173,8 @@ class RecipeViewSet(ModelViewSet):
         # для .txt "text/plain",
         # для .pdf "application/pdf"
         response = HttpResponse(buffer, content_type="application/pdf")
-        response["Content-Disposition"] = f"attachment; filename={filename}.pdf"
+        response[
+            "Content-Disposition"
+        ] = f"attachment; filename={filename}.pdf"
 
         return response
