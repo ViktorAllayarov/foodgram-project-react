@@ -3,9 +3,7 @@ services:
 
   frontend:
     container_name: foodgram-frontend
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: paradox25/foodgram_frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
   db:
@@ -17,9 +15,7 @@ services:
       - ./.env
   backend:
     container_name: foodgram-backend
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+    image: paradox25/foodgram:latest
     restart: always
     volumes:
       - static_value:/app/static/
