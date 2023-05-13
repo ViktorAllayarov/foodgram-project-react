@@ -27,22 +27,13 @@ class User(AbstractUser):
         unique=True,
         max_length=254,
     )
-    first_name = models.CharField(
-        max_length=150,
-        blank=False
-    )
-    last_name = models.CharField(
-        max_length=150,
-        blank=False
-    )
-    password = models.CharField(
-        max_length=150,
-        blank=False
-    )
+    first_name = models.CharField(max_length=150, blank=False)
+    last_name = models.CharField(max_length=150, blank=False)
+    password = models.CharField(max_length=150, blank=False)
 
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
         ordering = ("-id",)
 
     def __str__(self):
@@ -64,9 +55,11 @@ class Subscriptions(models.Model):
     )
 
     class Meta:
-        constraints = [models.UniqueConstraint(
-            fields=["user", "following"], name="unique_follow"
-        )]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "following"], name="unique_follow"
+            )
+        ]
 
     def __str__(self):
         return f"Пользователь {self.user} подписан на {self.following}"

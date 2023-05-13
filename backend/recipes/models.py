@@ -1,4 +1,4 @@
-from django.core.validators import RegexValidator, MinValueValidator
+from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 
 from users.models import User
@@ -95,6 +95,9 @@ class Recipe(models.Model):
         verbose_name = "Рецепт"
         verbose_name_plural = "Рецепты"
         ordering = ("-id",)
+
+    def __str__(self):
+        return self.name
 
 
 class AmountIngredient(models.Model):
