@@ -1,14 +1,8 @@
 from django.contrib import admin
 from django.contrib.admin import display, site
 
-from recipes.models import (
-    AmountIngredient,
-    Cart,
-    Favorites,
-    Ingredient,
-    Recipe,
-    Tag,
-)
+from recipes.models import (AmountIngredient, Cart, Favorites, Ingredient,
+                            Recipe, Tag)
 
 site.site_header = "Админ панель Foodgram"
 

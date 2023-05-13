@@ -6,13 +6,7 @@ from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
-from recipes.models import (
-    AmountIngredient,
-    Ingredient,
-    Recipe,
-    Tag,
-)
-from users.models import User
+from recipes.models import AmountIngredient, Ingredient, Recipe, Tag
 from users.serializers import UserSerializer
 
 

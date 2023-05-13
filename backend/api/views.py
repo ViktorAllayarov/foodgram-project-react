@@ -2,7 +2,7 @@ import io
 from datetime import datetime
 
 from django.db.models import Sum
-from django.http import FileResponse, HttpResponse
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from reportlab.lib.pagesizes import A4
@@ -18,21 +18,11 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import PageLimitPagination
 from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
-from api.serializers import (
-    IngredientSerializer,
-    RecipeAddToSerializer,
-    RecipeReadSerializer,
-    RecipeWriteSerializer,
-    TagSerializer,
-)
-from recipes.models import (
-    AmountIngredient,
-    Cart,
-    Favorites,
-    Ingredient,
-    Recipe,
-    Tag,
-)
+from api.serializers import (IngredientSerializer, RecipeAddToSerializer,
+                             RecipeReadSerializer, RecipeWriteSerializer,
+                             TagSerializer)
+from recipes.models import (AmountIngredient, Cart, Favorites, Ingredient,
+                            Recipe, Tag)
 
 
 class TagViewSet(ReadOnlyModelViewSet):
