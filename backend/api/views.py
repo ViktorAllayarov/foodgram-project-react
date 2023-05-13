@@ -19,21 +19,11 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import PageLimitPagination
 from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
-from api.serializers import (
-    IngredientSerializer,
-    RecipeAddToSerializer,
-    RecipeReadSerializer,
-    RecipeWriteSerializer,
-    TagSerializer,
-)
-from recipes.models import (
-    AmountIngredient,
-    Cart,
-    Favorites,
-    Ingredient,
-    Recipe,
-    Tag,
-)
+from api.serializers import (IngredientSerializer, RecipeAddToSerializer,
+                             RecipeReadSerializer, RecipeWriteSerializer,
+                             TagSerializer)
+from recipes.models import (AmountIngredient, Cart, Favorites, Ingredient,
+                            Recipe, Tag)
 
 
 class TagViewSet(ReadOnlyModelViewSet):
