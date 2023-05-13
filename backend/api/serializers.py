@@ -1,4 +1,4 @@
-from django.db.models import F, QuerySet
+from django.db.models import F
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework.exceptions import ValidationError
@@ -60,13 +60,12 @@ class RecipeReadSerializer(ModelSerializer):
     def get_ingredients(self, recipe):
         """Получает список ингридиентов для рецепта."""
 
-        ingredients = recipe.ingredients.values(
+        return recipe.ingredients.values(
             "id",
             "name",
             "measurement_unit",
             amount=F("amountingredient__amount"),
         )
-        return ingredients
 
     def get_is_favorited(self, recipe):
         """Находится ли рецепт в избранных."""
@@ -119,9 +118,7 @@ class RecipeWriteSerializer(ModelSerializer):
     def validate_ingredients(self, value):
         ingredients = value
         if not ingredients:
-            raise ValidationError(
-                {"ingredients": "Нужен хотя бы один ингредиент!"}
-            )
+            raise ValidationError({"ingredients": "Нужен хотя бы один ингредиент!"})
         ingredients_list = []
         for item in ingredients:
             ingredient = get_object_or_404(Ingredient, id=item["id"])
@@ -143,9 +140,7 @@ class RecipeWriteSerializer(ModelSerializer):
         tags_list = []
         for tag in tags:
             if tag in tags_list:
-                raise ValidationError(
-                    {"tags": "Теги должны быть уникальными!"}
-                )
+                raise ValidationError({"tags": "Теги должны быть уникальными!"})
             tags_list.append(tag)
         return value
 
@@ -176,9 +171,7 @@ class RecipeWriteSerializer(ModelSerializer):
         instance.tags.clear()
         instance.tags.set(tags)
         instance.ingredients.clear()
-        self.create_ingredients_amounts(
-            recipe=instance, ingredients=ingredients
-        )
+        self.create_ingredients_amounts(recipe=instance, ingredients=ingredients)
         instance.save()
         return instance
 

@@ -18,11 +18,14 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from api.filters import IngredientFilter, RecipeFilter
 from api.paginators import PageLimitPagination
 from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
-from api.serializers import (IngredientSerializer, RecipeAddToSerializer,
-                             RecipeReadSerializer, RecipeWriteSerializer,
-                             TagSerializer)
-from recipes.models import (AmountIngredient, Cart, Favorites, Ingredient,
-                            Recipe, Tag)
+from api.serializers import (
+    IngredientSerializer,
+    RecipeAddToSerializer,
+    RecipeReadSerializer,
+    RecipeWriteSerializer,
+    TagSerializer,
+)
+from recipes.models import AmountIngredient, Cart, Favorites, Ingredient, Recipe, Tag
 
 
 class TagViewSet(ReadOnlyModelViewSet):
@@ -127,9 +130,7 @@ class RecipeViewSet(ModelViewSet):
             else:
                 final_ingredients_list[name]["amount"] += item["amount"]
         print(final_ingredients_list)
-        pdfmetrics.registerFont(
-            TTFont("Roboto-Regular", "Roboto-Regular.ttf", "UTF-8")
-        )
+        pdfmetrics.registerFont(TTFont("Roboto-Regular", "Roboto-Regular.ttf", "UTF-8"))
         filename = f"{user.username}_shopping_list"
 
         buffer = io.BytesIO()
@@ -139,12 +140,12 @@ class RecipeViewSet(ModelViewSet):
         textobject = text_page.beginText()
         textobject.setFont("Roboto-Regular", size=10)
         textobject.setTextOrigin(30, height - 40)
-        textobject.textLine(text=f"Дата: {datetime.today():%Y-%m-%d}")
-        textobject.textLine(text=f"")
+        textobject.textLine(text=f"Дата: { datetime.today():%Y-%m-%d }")
+        textobject.textLine(text="")
         textobject.setFont("Roboto-Regular", size=14)
-        textobject.textLine(text=f"Список ингредиентов:")
+        textobject.textLine(text="Список ингредиентов:")
         textobject.setFont("Roboto-Regular", size=12)
-        textobject.textLine(text=f"")
+        textobject.textLine(text="")
         [
             textobject.textLine(
                 text=f"- {ingredient} "
@@ -162,8 +163,6 @@ class RecipeViewSet(ModelViewSet):
         # для .txt "text/plain",
         # для .pdf "application/pdf"
         response = HttpResponse(buffer, content_type="application/pdf")
-        response[
-            "Content-Disposition"
-        ] = f"attachment; filename={filename}.pdf"
+        response["Content-Disposition"] = f"attachment; filename={filename}.pdf"
 
         return response

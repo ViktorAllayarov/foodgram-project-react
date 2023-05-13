@@ -90,15 +90,11 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "name",
-                    models.CharField(
-                        max_length=200, verbose_name="Ингредиент"
-                    ),
+                    models.CharField(max_length=200, verbose_name="Ингредиент"),
                 ),
                 (
                     "measurement_unit",
-                    models.CharField(
-                        max_length=200, verbose_name="Единица измерения"
-                    ),
+                    models.CharField(max_length=200, verbose_name="Единица измерения"),
                 ),
             ],
             options={

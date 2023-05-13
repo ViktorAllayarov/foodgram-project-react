@@ -7,8 +7,7 @@ class User(AbstractUser):
     "Класс переопределяет и расширяет стандартную модель User."
 
     USERNAME_ERR_MESS = (
-        "Содержание поля 'username' не соответствует "
-        "паттерну '^[\\w.@+-]+\\z'"
+        "Содержание поля 'username' не соответствует " "паттерну '^[\\w.@+-]+\\z'"
     )
 
     username = models.CharField(
@@ -56,9 +55,7 @@ class Subscriptions(models.Model):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=["user", "following"], name="unique_follow"
-            )
+            models.UniqueConstraint(fields=["user", "following"], name="unique_follow")
         ]
 
     def __str__(self):

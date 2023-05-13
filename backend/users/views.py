@@ -27,37 +27,25 @@ class CustomUserViewSet(UserViewSet):
         author = get_object_or_404(User, id=author_id)
         if request.method == "POST":
             if user == author:
-                raise ValidationError(
-                    "Вы не можете подписаться на самого себя!"
-                )
-            if Subscriptions.objects.filter(
-                following=author, user=user
-            ).exists():
+                raise ValidationError("Вы не можете подписаться на самого себя!")
+            if Subscriptions.objects.filter(following=author, user=user).exists():
                 raise ValidationError("Вы уже подписаны!")
-            serializer = SubscribeSerializer(
-                author, context={"request": request}
-            )
+            serializer = SubscribeSerializer(author, context={"request": request})
             Subscriptions.objects.create(user=user, following=author)
-
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         if request.method == "DELETE":
-            subscription = get_object_or_404(
-                Subscriptions, user=user, following=author
-            )
+            subscription = get_object_or_404(Subscriptions, user=user, following=author)
             subscription.delete()
-
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(
-        detail=False, methods=["get"], permission_classes=(IsAuthenticated,)
-    )
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=False, methods=["get"], permission_classes=(IsAuthenticated,))
     def subscriptions(self, request):
         user = request.user
         queryset = User.objects.filter(following__user=user)
         pages = self.paginate_queryset(queryset)
-        serializer = SubscribeSerializer(
-            pages, many=True, context={"request": request}
-        )
+        serializer = SubscribeSerializer(pages, many=True, context={"request": request})
 
         return self.get_paginated_response(serializer.data)

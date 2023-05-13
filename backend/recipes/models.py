@@ -7,9 +7,7 @@ from users.models import User
 class Tag(models.Model):
     """Класс модель тегов для рецептов."""
 
-    name = models.CharField(
-        verbose_name="Название", unique=True, max_length=200
-    )
+    name = models.CharField(verbose_name="Название", unique=True, max_length=200)
     color = models.CharField(
         verbose_name="Цветовой HEX-код",
         unique=True,
@@ -68,12 +66,8 @@ class Recipe(models.Model):
         verbose_name="Ингредиенты блюда",
         through="AmountIngredient",
     )
-    tags = models.ManyToManyField(
-        Tag, related_name="recipes", verbose_name="Теги"
-    )
-    image = models.ImageField(
-        verbose_name="Изображение", upload_to="recipe_images/"
-    )
+    tags = models.ManyToManyField(Tag, related_name="recipes", verbose_name="Теги")
+    image = models.ImageField(verbose_name="Изображение", upload_to="recipe_images/")
     name = models.CharField(
         verbose_name="Название",
         max_length=200,
@@ -145,9 +139,7 @@ class Cart(models.Model):
         verbose_name = "Корзина покупок"
         verbose_name_plural = "Корзина покупок"
         constraints = [
-            models.UniqueConstraint(
-                fields=["user", "recipe"], name="unique_cart"
-            )
+            models.UniqueConstraint(fields=["user", "recipe"], name="unique_cart")
         ]
 
     def __str__(self):
@@ -174,9 +166,7 @@ class Favorites(models.Model):
         verbose_name = "Избранное"
         verbose_name_plural = "Избранное"
         constraints = [
-            models.UniqueConstraint(
-                fields=["user", "recipe"], name="unique_favourite"
-            )
+            models.UniqueConstraint(fields=["user", "recipe"], name="unique_favourite")
         ]
 
     def __str__(self):
