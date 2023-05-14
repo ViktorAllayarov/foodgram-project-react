@@ -37,3 +37,38 @@ http://158.160.31.116/api/docs/
 ---
 
 ## Подготовка и запуск проекта (на удаленном сервере Ubuntu)
+
+- Клонируем проект:
+
+```
+git clone git@github.com:ViktorAllayarov/foodgram-project-react.git
+```
+
+- Устанавливаем docker и docker-compose:
+
+```
+sudo apt install docker.io
+sudo apt install docker-compose
+```
+
+- Копируем файлы на сервер сервер:
+
+```
+scp docker-compose.yml <username>@<host>:/home/<username>/
+scp nginx.conf <username>@<host>:/home/<username>/
+scp .env <username>@<host>:/home/<username>/
+```
+
+- Запускаем docker-compose:
+
+```
+sudo docker-compose up -d --build
+```
+
+- Выполняем миграции, создаем суперюзера и собераем статику:
+
+```
+sudo docker-compose exec backend python manage.py migrate
+sudo docker-compose exec backend python manage.py createsuperuser
+sudo docker-compose exec backend python manage.py collectstatic --no-input
+```
