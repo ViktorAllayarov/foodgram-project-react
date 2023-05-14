@@ -55,6 +55,18 @@ sudo apt install docker.io
 sudo apt install docker-compose
 ```
 
+- Cоздаем .env файл и вписываем данные:
+
+```
+    DB_ENGINE=<django.db.backends.postgresql>
+    DB_NAME=<имя базы данных postgres>
+    DB_USER=<пользователь бд>
+    DB_PASSWORD=<пароль>
+    DB_HOST=<db>
+    DB_PORT=<5432>
+    SECRET_KEY=<секретный ключ проекта django>
+```
+
 - Копируем файлы на сервер сервер:
 
 ```
