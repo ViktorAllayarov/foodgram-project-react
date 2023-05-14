@@ -1,5 +1,9 @@
 ## ЯндексПрактикум. Спринт 14 - "Foodgram"
 
+<div align="center">
+  <img src="https://media.giphy.com/media/dWesBcTLavkZuG35MI/giphy.gif" width="600" height="300"/>
+</div>
+
 ---
 
 ![workflow](https://github.com/ViktorAllayarov/foodgram-project-react/actions/workflows/workflow.yml/badge.svg)
