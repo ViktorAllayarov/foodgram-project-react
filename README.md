@@ -32,7 +32,7 @@ http://158.160.31.116
 ✅ Админка
 http://158.160.31.116/admin/
 
-login: admin  
+login: viktorall25@yandex.ru  
 password: admin
 
 ✅ Документация к проекту
