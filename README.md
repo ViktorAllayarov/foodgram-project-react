@@ -89,10 +89,10 @@ sudo docker-compose exec backend python manage.py createsuperuser
 sudo docker-compose exec backend python manage.py collectstatic --no-input
 ```
 
-- Наполняем базу данных информацией из файла ingredients.json:
+- Наполняем базу данных информацией из файла ingredient.json:
 
 ```
-sudo docker-compose exec backend python manage.py loaddata data/ingredients.json
+sudo docker-compose exec backend python manage.py loaddata data/ingredient.json
 ```
 
 - Для работы с GitHub Actions необходимы следующие переменные:
