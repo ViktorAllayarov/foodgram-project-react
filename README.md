@@ -58,13 +58,13 @@ sudo apt install docker-compose
 - Cоздаем .env файл и вписываем данные:
 
 ```
-    DB_ENGINE=<django.db.backends.postgresql>
-    DB_NAME=<имя базы данных postgres>
-    DB_USER=<пользователь бд>
-    DB_PASSWORD=<пароль>
-    DB_HOST=<db>
-    DB_PORT=<5432>
-    SECRET_KEY=<секретный ключ проекта django>
+DB_ENGINE=<django.db.backends.postgresql>
+DB_NAME=<имя базы данных postgres>
+DB_USER=<пользователь бд>
+DB_PASSWORD=<пароль>
+DB_HOST=<db>
+DB_PORT=<5432>
+SECRET_KEY=<секретный ключ проекта django>
 ```
 
 - Копируем файлы на сервер:
@@ -81,10 +81,87 @@ scp .env <username>@<host>:/home/<username>/
 sudo docker-compose up -d --build
 ```
 
-- Выполняем миграции, создаем суперюзера и собераем статику:
+- Выполняем миграции, создаем суперюзера и собираем статику:
 
 ```
 sudo docker-compose exec backend python manage.py migrate
 sudo docker-compose exec backend python manage.py createsuperuser
 sudo docker-compose exec backend python manage.py collectstatic --no-input
 ```
+
+- Наполняем базу данных информацией из файла ingredients.json:
+
+```
+sudo docker-compose exec backend python manage.py loaddata data/ingredients.json
+```
+
+- Для работы с GitHub Actions необходимы следующие переменные:
+
+```
+SECRET_KEY              # секретный ключ Django проекта в строковом формате
+
+DOCKER_USERNAME         # логин Docker Hub
+DOCKER_PASSWORD         # пароль от Docker Hub
+
+HOST                    # публичный IP сервера
+USER                    # имя пользователя на сервере
+PASSPHRASE              # *если ssh-ключ защищен паролем
+SSH_KEY                 # приватный ssh-ключ
+
+TELEGRAM_TO             # ID телеграм-аккаунта для посылки сообщения
+TELEGRAM_TOKEN          # токен бота, посылающего сообщение
+
+DB_ENGINE               # django.db.backends.postgresql
+DB_NAME                 # postgres
+POSTGRES_USER           # postgres
+POSTGRES_PASSWORD       # postgres
+DB_HOST                 # db
+DB_PORT                 # 5432 (порт по умолчанию)
+```
+
+---
+
+## Запуск проекта на локальной машине
+
+- Клонируем проект:
+
+```
+git clone git@github.com:ViktorAllayarov/foodgram-project-react.git
+```
+
+- В директории infra файл .env заполняем своими данными:
+
+```
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+DB_HOST=db
+DB_PORT=5432
+SECRET_KEY='секретный ключ Django'
+```
+
+- Запускаем docker-compose на сервере:
+
+```
+cd infra
+sudo docker-compose up -d --build
+```
+
+- Выполняем миграции, создаем суперюзера и собираем статику:
+
+```
+sudo docker-compose exec backend python manage.py migrate
+sudo docker-compose exec backend python manage.py createsuperuser
+sudo docker-compose exec backend python manage.py collectstatic --no-input
+```
+
+- Теперь проект доступен по адресу: http://localhost/
+
+---
+
+## Автор
+
+Виктор Аллаяров
+
+[![Made with by favicon.tech](https://favicon.tech/logo_tea.png)](https://favicon.tech)
