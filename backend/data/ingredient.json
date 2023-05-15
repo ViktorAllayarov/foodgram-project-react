@@ -4,7 +4,7 @@
       "pk": 1,
       "fields":{
         "name": "завтрак",
-        "color": "#FFFC66",
+        "color": "#E26C2D",
         "slug": "breakfast"
       }
     },
@@ -13,7 +13,7 @@
       "pk": 2,
       "fields":{
         "name": "обед",
-        "color": "#54E709",
+        "color": "#49B64E",
         "slug": "lunch"
       }
     },
@@ -22,7 +22,7 @@
       "pk": 3,
       "fields":{
         "name": "ужин",
-        "color": "#E4007C",
+        "color": "#8775D2",
         "slug": "dinner"
       }
     },
