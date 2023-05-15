@@ -67,7 +67,7 @@ sudo apt install docker-compose
     SECRET_KEY=<секретный ключ проекта django>
 ```
 
-- Копируем файлы на сервер сервер:
+- Копируем файлы на сервер:
 
 ```
 scp docker-compose.yml <username>@<host>:/home/<username>/
@@ -75,7 +75,7 @@ scp nginx.conf <username>@<host>:/home/<username>/
 scp .env <username>@<host>:/home/<username>/
 ```
 
-- Запускаем docker-compose:
+- Запускаем docker-compose на сервере:
 
 ```
 sudo docker-compose up -d --build
