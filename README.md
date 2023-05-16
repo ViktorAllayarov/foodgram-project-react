@@ -73,7 +73,7 @@ SECRET_KEY=<секретный ключ проекта django>
 scp docker-compose.yml <username>@<host>:/home/<username>/
 scp nginx.conf <username>@<host>:/home/<username>/
 scp .env <username>@<host>:/home/<username>/
-scp -i -r ../docs/ paradox@158.160.31.116:/home/paradox/docs/
+scp -i -r ../docs/ <username>@<host>:/home/<username>/docs/
 ```
 
 - Запускаем docker-compose на сервере:
