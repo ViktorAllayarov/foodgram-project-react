@@ -1,14 +1,118 @@
+from django.contrib.auth import get_user_model
 from django.db.models import F
 from django.shortcuts import get_object_or_404
 
 from drf_extra_fields.fields import Base64ImageField
+from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, CurrentUserDefault, SlugRelatedField
 
+from api.mixins import IsSubscribedMixin
 from recipes.models import AmountIngredient, Ingredient, Recipe, Tag
-from users.serializers import UserSerializer
+from users.models import Subscriptions
+
+User = get_user_model()
+
+
+class UserSerializer(ModelSerializer):
+    is_subscribed = SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = (
+            "email",
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "is_subscribed",
+            "password",
+        )
+        extra_kwargs = {"password": {"write_only": True}}
+        read_only_fields = ("is_subscribed",)
+
+    def get_is_subscribed(self, obj):
+        user = self.context.get("request").user
+        if user.is_anonymous or (user == obj):
+            return False
+        return Subscriptions.objects.filter(user=user, following=obj).exists()
+
+    def create(self, validated_data):
+        user = User(
+            email=validated_data["email"],
+            username=validated_data["username"],
+            first_name=validated_data["first_name"],
+            last_name=validated_data["last_name"],
+        )
+        user.set_password(validated_data["password"])
+        user.save()
+
+        return user
+
+
+class SubscribeSerializer(ModelSerializer):
+    following = SlugRelatedField(
+        slug_field='id',
+        queryset=User.objects.all(),
+    )
+    user = SlugRelatedField(
+        slug_field='id',
+        queryset=User.objects.all(),
+        default=CurrentUserDefault()
+    )
+
+    class Meta:
+        model = Subscriptions
+        fields = '__all__'
+
+    def validate(self, data):
+        author = data.get("following")
+        user = data.get("user")
+        if Subscriptions.objects.filter(following=author, user=user).exists():
+            raise ValidationError(
+                detail='Вы уже подписаны на этого пользователя!',
+                code=status.HTTP_400_BAD_REQUEST
+            )
+        if user == author:
+            raise ValidationError(
+                detail='Вы не можете подписаться на самого себя!',
+                code=status.HTTP_400_BAD_REQUEST
+            )
+            
+        return data
+
+
+class SubscriptionsSerializer(ModelSerializer, IsSubscribedMixin):
+    recipes = SerializerMethodField()
+    recipes_count = SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            "email",
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "is_subscribed",
+            "recipes",
+            "recipes_count",
+        ]
+
+    def get_recipes_count(self, data):
+        return Recipe.objects.filter(author=data).count()
+
+    def get_recipes(self, obj):
+        request = self.context.get("request")
+        limit = request.GET.get("recipes_limit")
+        recipes = obj.recipes.all()
+        if limit:
+            recipes = recipes[: int(limit)]
+        serializer = RecipeAddToSerializer(recipes, many=True, read_only=True)
+
+        return serializer.data
 
 
 class TagSerializer(ModelSerializer):

@@ -1,11 +1,13 @@
 import io
 from datetime import datetime
 
+from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 
 from django_filters.rest_framework import DjangoFilterBackend
+from djoser.views import UserViewSet
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
@@ -21,9 +23,60 @@ from api.paginators import PageLimitPagination
 from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from api.serializers import (IngredientSerializer, RecipeAddToSerializer,
                              RecipeReadSerializer, RecipeWriteSerializer,
-                             TagSerializer)
+                             SubscribeSerializer, SubscriptionsSerializer, TagSerializer,
+                             UserSerializer)
 from recipes.models import (AmountIngredient, Cart, Favorites, Ingredient,
                             Recipe, Tag)
+from users.models import Subscriptions
+
+User = get_user_model()
+
+
+class CustomUserViewSet(UserViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    pagination_class = PageLimitPagination
+
+    @action(
+        detail=True,
+        methods=["post", "delete"],
+        permission_classes=(IsAuthenticated,),
+    )
+    def subscribe(self, request, **kwargs):
+        user = request.user
+        author_id = self.kwargs.get("id")
+        author = get_object_or_404(User, id=author_id)
+        if request.method == "POST":
+            data = {
+                'user': user.id,
+                'following': author_id,
+            }
+            serializer = SubscribeSerializer(data=data,
+                                             context={"request": request})
+            serializer.is_valid(raise_exception=True)
+            Subscriptions.objects.create(user=user, following=author)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        subscription = get_object_or_404(
+            Subscriptions, user=user, following=author
+        )
+        subscription.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    @action(
+        detail=False, methods=["get"], permission_classes=(IsAuthenticated,)
+    )
+    def subscriptions(self, request):
+        user = request.user
+        queryset = User.objects.filter(following__user=user)
+        pages = self.paginate_queryset(queryset)
+        serializer = SubscriptionsSerializer(
+            pages, many=True, context={"request": request}
+        )
+
+        return self.get_paginated_response(serializer.data)
 
 
 class TagViewSet(ReadOnlyModelViewSet):
@@ -158,8 +211,6 @@ class RecipeViewSet(ModelViewSet):
         text_page.save()
         buffer.seek(0)
 
-        # для .txt "text/plain",
-        # для .pdf "application/pdf"
         response = HttpResponse(buffer, content_type="application/pdf")
         response[
             "Content-Disposition"
