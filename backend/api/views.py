@@ -23,8 +23,8 @@ from api.paginators import PageLimitPagination
 from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from api.serializers import (IngredientSerializer, RecipeAddToSerializer,
                              RecipeReadSerializer, RecipeWriteSerializer,
-                             SubscribeSerializer, SubscriptionsSerializer, TagSerializer,
-                             UserSerializer)
+                             SubscribeSerializer, SubscriptionsSerializer,
+                             TagSerializer, UserSerializer)
 from recipes.models import (AmountIngredient, Cart, Favorites, Ingredient,
                             Recipe, Tag)
 from users.models import Subscriptions
@@ -48,11 +48,12 @@ class CustomUserViewSet(UserViewSet):
         author = get_object_or_404(User, id=author_id)
         if request.method == "POST":
             data = {
-                'user': user.id,
-                'following': author_id,
+                "user": user.id,
+                "following": author_id,
             }
-            serializer = SubscribeSerializer(data=data,
-                                             context={"request": request})
+            serializer = SubscribeSerializer(
+                data=data, context={"request": request}
+            )
             serializer.is_valid(raise_exception=True)
             Subscriptions.objects.create(user=user, following=author)
 
@@ -63,7 +64,6 @@ class CustomUserViewSet(UserViewSet):
         )
         subscription.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
     @action(
         detail=False, methods=["get"], permission_classes=(IsAuthenticated,)

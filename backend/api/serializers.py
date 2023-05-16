@@ -7,7 +7,8 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import IntegerField, SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
-from rest_framework.serializers import ModelSerializer, CurrentUserDefault, SlugRelatedField
+from rest_framework.serializers import (CurrentUserDefault, ModelSerializer,
+                                        SlugRelatedField)
 
 from api.mixins import IsSubscribedMixin
 from recipes.models import AmountIngredient, Ingredient, Recipe, Tag
@@ -54,33 +55,33 @@ class UserSerializer(ModelSerializer):
 
 class SubscribeSerializer(ModelSerializer):
     following = SlugRelatedField(
-        slug_field='id',
+        slug_field="id",
         queryset=User.objects.all(),
     )
     user = SlugRelatedField(
-        slug_field='id',
+        slug_field="id",
         queryset=User.objects.all(),
-        default=CurrentUserDefault()
+        default=CurrentUserDefault(),
     )
 
     class Meta:
         model = Subscriptions
-        fields = '__all__'
+        fields = "__all__"
 
     def validate(self, data):
         author = data.get("following")
         user = data.get("user")
         if Subscriptions.objects.filter(following=author, user=user).exists():
             raise ValidationError(
-                detail='Вы уже подписаны на этого пользователя!',
-                code=status.HTTP_400_BAD_REQUEST
+                detail="Вы уже подписаны на этого пользователя!",
+                code=status.HTTP_400_BAD_REQUEST,
             )
         if user == author:
             raise ValidationError(
-                detail='Вы не можете подписаться на самого себя!',
-                code=status.HTTP_400_BAD_REQUEST
+                detail="Вы не можете подписаться на самого себя!",
+                code=status.HTTP_400_BAD_REQUEST,
             )
-            
+
         return data
 
 
